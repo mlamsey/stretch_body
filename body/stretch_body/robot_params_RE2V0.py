@@ -258,7 +258,7 @@ RE2V0_wrist_roll_DW2={
         'baud': 115200,
         'retry_on_comm_failure': 1,
         'disable_torque_on_stop': 0,
-        'float_on_stop': 1,
+        'float_on_stop': 0,
         'current_float_A': 0.04,
         'current_limit_A': 1.0,
         'distance_tol': 0.015
@@ -358,6 +358,45 @@ RE2V0_tool_stretch_dex_wrist={
     }
 }
 
+REV20_tool_stretch_dex_bubble={
+    'device_info': "CUSTOM EndOfArm chain for original DexWrist with a Punyo bubble. Compatible RE2. Imported from tool_share.",
+    'py_class_name': 'ToolStretchDexBubble',
+    'py_module_name': 'stretch_body.end_of_arm_tools',
+    'use_group_sync_read': 1,
+    'retry_on_comm_failure': 1,
+    'baud': 115200,
+    'dxl_latency_timer': 64,
+    'collision_mgmt': {
+        'k_brake_distance': {},
+        'collision_pairs': {},
+        'joints': {}},
+    'stow': {
+        'arm': 0.0,
+        'lift': 0.2,
+        'stretch_gripper': 0.0,
+        'wrist_pitch': 0.0,
+        'wrist_roll': 0.0,
+        'wrist_yaw': 3.0
+    },
+    'devices': {
+        'wrist_pitch': {
+            'py_class_name': 'WristPitch',
+            'py_module_name': 'stretch_body.wrist_pitch',
+            'device_params':'RE2V0_wrist_pitch_DW2'
+        },
+        'wrist_roll': {
+            'py_class_name': 'WristRoll',
+            'py_module_name': 'stretch_body.wrist_roll',
+            'device_params': 'RE2V0_wrist_roll_DW2'
+        },
+        'wrist_yaw': {
+            'py_class_name': 'WristYaw',
+            'py_module_name': 'stretch_body.wrist_yaw',
+            'device_params':'RE2V0_wrist_yaw'
+        },
+    },
+}
+
 # ###################################33
 # Baseline Nominal Params
 nominal_params={
@@ -366,12 +405,13 @@ nominal_params={
     # Eg, supported_eoa.tool_none --> adds the wrist_yaw param dict to nominal_params
     # Add all formally supported EOA to this list
     'supported_eoa': ['tool_stretch_dex_wrist','tool_stretch_gripper','tool_none',
-                      'eoa_wrist_dw3_tool_nil', 'eoa_wrist_dw3_tool_sg3'],
+                      'eoa_wrist_dw3_tool_nil', 'eoa_wrist_dw3_tool_sg3', 'tool_stretch_dex_bubble'],
     'tool_stretch_dex_wrist': RE2V0_tool_stretch_dex_wrist,
     'tool_stretch_gripper': RE2V0_tool_stretch_gripper,
     'tool_none': RE2V0_tool_none,
     'eoa_wrist_dw3_tool_nil': SE3_eoa_wrist_dw3_tool_nil,
     'eoa_wrist_dw3_tool_sg3': SE3_eoa_wrist_dw3_tool_sg3,
+    'tool_stretch_dex_bubble': REV20_tool_stretch_dex_bubble,
     # #################################
     'arm':{
         'usb_name': '/dev/hello-motor-arm',
