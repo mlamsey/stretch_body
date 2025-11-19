@@ -127,8 +127,7 @@ RE2V0_stretch_gripper={
         'enable_runstop': 1,
         'disable_torque_on_stop': 1,
         'range_t': [0, 8022],
-        'zero_t': 5212,
-        'distance_tol': 0.015}
+        'zero_t': 5212}
 
 RE2V0_wrist_yaw={
     'device_info': "Standard wrist yaw shipped with original RE2",
@@ -176,8 +175,7 @@ RE2V0_wrist_yaw={
     'disable_torque_on_stop': 1,
     'range_pad_t': [100.0, -100.0],
     'range_t': [0,9340],
-    'zero_t': 7005,
-    'distance_tol': 0.015}
+    'zero_t': 7005}
 
 #Brought in from tool_share for DexWrist "2"
 RE2V0_wrist_pitch_DW2={
@@ -218,8 +216,7 @@ RE2V0_wrist_pitch_DW2={
         'disable_torque_on_stop': 0,
         'float_on_stop': 1,
         'current_float_A': -0.13,
-        'current_limit_A': 2.5,
-        'distance_tol': 0.03
+        'current_limit_A': 2.5
     }
 
 RE2V0_wrist_roll_DW2={
@@ -258,10 +255,9 @@ RE2V0_wrist_roll_DW2={
         'baud': 115200,
         'retry_on_comm_failure': 1,
         'disable_torque_on_stop': 0,
-        'float_on_stop': 1,
+        'float_on_stop': 0,
         'current_float_A': 0.04,
-        'current_limit_A': 1.0,
-        'distance_tol': 0.015
+        'current_limit_A': 1.0
     }
 
 # ######### EndOfArm Defn ##############
@@ -343,12 +339,14 @@ RE2V0_tool_stretch_dex_wrist={
         'wrist_pitch': {
             'py_class_name': 'WristPitch',
             'py_module_name': 'stretch_body.wrist_pitch',
-            'device_params':'RE2V0_wrist_pitch_DW2'
+            'device_params':'RE2V0_wrist_pitch_DW2',
+            'ros_py_module_name': 'stretch_tool_share.stretch_dex_wrist.command_groups',
         },
         'wrist_roll': {
             'py_class_name': 'WristRoll',
             'py_module_name': 'stretch_body.wrist_roll',
-            'device_params': 'RE2V0_wrist_roll_DW2'
+            'device_params': 'RE2V0_wrist_roll_DW2',
+            'ros_py_module_name': 'stretch_tool_share.stretch_dex_wrist.command_groups',
         },
         'wrist_yaw': {
             'py_class_name': 'WristYaw',
@@ -356,6 +354,49 @@ RE2V0_tool_stretch_dex_wrist={
             'device_params':'RE2V0_wrist_yaw'
         },
     }
+}
+
+REV20_tool_stretch_dex_bubble={
+    'device_info': "CUSTOM EndOfArm chain for original DexWrist with a Punyo bubble. Compatible RE2. Imported from tool_share.",
+    'py_class_name': 'ToolStretchDexBubble',
+    'py_module_name': 'stretch_body.end_of_arm_tools',
+    'use_group_sync_read': 1,
+    'retry_on_comm_failure': 1,
+    'baud': 115200,
+    'dxl_latency_timer': 64,
+    'collision_mgmt': {
+        'k_brake_distance': {},
+        'collision_pairs': {},
+        'joints': {}},
+    'stow': {
+        'arm': 0.0,
+        'lift': 0.2,
+        'stretch_gripper': 0.0,
+        'wrist_pitch': 0.0,
+        'wrist_roll': 0.0,
+        'wrist_yaw': 3.0
+    },
+    'devices': {
+        'wrist_pitch': {
+            'py_class_name': 'WristPitch',
+            'py_module_name': 'stretch_body.wrist_pitch',
+            'device_params':'RE2V0_wrist_pitch_DW2',
+            'ros_py_module_name': 'stretch_tool_share.stretch_dex_bubble.command_groups',
+            'ros_py_class_name': 'WristPitchCommandGroup',
+        },
+        'wrist_roll': {
+            'py_class_name': 'WristRoll',
+            'py_module_name': 'stretch_body.wrist_roll',
+            'device_params': 'RE2V0_wrist_roll_DW2',
+            'ros_py_module_name': 'stretch_tool_share.stretch_dex_bubble.command_groups',
+            'ros_py_class_name': 'WristRollCommandGroup',
+        },
+        'wrist_yaw': {
+            'py_class_name': 'WristYaw',
+            'py_module_name': 'stretch_body.wrist_yaw',
+            'device_params':'RE2V0_wrist_yaw'
+        },
+    },
 }
 
 # ###################################33
@@ -366,12 +407,13 @@ nominal_params={
     # Eg, supported_eoa.tool_none --> adds the wrist_yaw param dict to nominal_params
     # Add all formally supported EOA to this list
     'supported_eoa': ['tool_stretch_dex_wrist','tool_stretch_gripper','tool_none',
-                      'eoa_wrist_dw3_tool_nil', 'eoa_wrist_dw3_tool_sg3'],
+                      'eoa_wrist_dw3_tool_nil', 'eoa_wrist_dw3_tool_sg3', 'tool_stretch_dex_bubble'],
     'tool_stretch_dex_wrist': RE2V0_tool_stretch_dex_wrist,
     'tool_stretch_gripper': RE2V0_tool_stretch_gripper,
     'tool_none': RE2V0_tool_none,
     'eoa_wrist_dw3_tool_nil': SE3_eoa_wrist_dw3_tool_nil,
     'eoa_wrist_dw3_tool_sg3': SE3_eoa_wrist_dw3_tool_sg3,
+    'tool_stretch_dex_bubble': REV20_tool_stretch_dex_bubble,
     # #################################
     'arm':{
         'usb_name': '/dev/hello-motor-arm',
@@ -401,8 +443,7 @@ nominal_params={
                 'vel_m': 0.4,
                 'accel_m': 0.4},
         'vel_brakezone_factor': 0.03},
-        'set_safe_velocity': 1,
-        'distance_tol': 0.008},
+        'set_safe_velocity': 1},
     'base':{
         'usb_name_left_wheel': '/dev/hello-motor-left-wheel',
         'usb_name_right_wheel': '/dev/hello-motor-right-wheel',
@@ -503,8 +544,7 @@ nominal_params={
         'stall_min_vel': 0.1,
         'range_pad_t':[50.0,-50.0],
         'range_t': [0, 3827],
-        'zero_t': 1250,
-        'distance_tol': 0.15},
+        'zero_t': 1250},
     'head_tilt':{
         'flip_encoder_polarity': 1,
         'gr': 1.0,
@@ -552,8 +592,7 @@ nominal_params={
         'stall_min_vel': 0.1,
         'range_pad_t': [50.0, -50.0],
         'range_t': [1775,3150],
-        'zero_t': 2048,
-        'distance_tol': 0.52},
+        'zero_t': 2048},
     'hello-motor-arm':{
         'gains':{
             'effort_LPF': 10.0,
@@ -730,8 +769,7 @@ nominal_params={
               'vel_m': 0.15},
         'vel_brakezone_factor': 0.01},
         'set_safe_velocity': 1,
-        'pinion_t': 12,
-        'distance_tol': 0.015},
+          'pinion_t': 12},
     'pimu':{
       'usb_name': '/dev/hello-pimu',
       'base_fan_off': 70,
