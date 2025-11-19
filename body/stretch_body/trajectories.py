@@ -1,3 +1,4 @@
+from __future__ import annotations
 from __future__ import print_function
 import stretch_body.hello_utils as hu
 
